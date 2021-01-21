@@ -1,0 +1,546 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.2
+-- Dumped by pg_dump version 12.2
+
+-- Started on 2021-01-20 23:05:18
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 211 (class 1255 OID 139428)
+-- Name: f_baixaestoque(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.f_baixaestoque() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+declare 
+	qtdeEstoque integer;
+
+begin
+    select estoque into qtdeEstoque
+		from produto
+		where idproduto = new.idproduto;
+
+    IF(qtdeEstoque >= new.quantidade) THEN
+        update produto
+        set estoque = estoque - new.quantidade
+        where idproduto = new.idproduto;
+    ELSE
+         raise 'Quantidade insuficiente de produto'
+            using ERRCODE = 'ER003';        
+    end if;
+
+    return new;
+end;
+
+$$;
+
+
+ALTER FUNCTION public.f_baixaestoque() OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 202 (class 1259 OID 98462)
+-- Name: cliente; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.cliente (
+    idcliente integer NOT NULL,
+    telefone character varying(15),
+    nome character varying(50) NOT NULL,
+    rua character varying(50) NOT NULL,
+    numero integer NOT NULL,
+    bairro character varying(20) NOT NULL,
+    cidade character varying(30) NOT NULL
+);
+
+
+ALTER TABLE public.cliente OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 188576)
+-- Name: emailcliente; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.emailcliente (
+    idcliente integer NOT NULL,
+    email character varying(60) NOT NULL
+);
+
+
+ALTER TABLE public.emailcliente OWNER TO postgres;
+
+--
+-- TOC entry 203 (class 1259 OID 98467)
+-- Name: fornecedor; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.fornecedor (
+    cnpj character varying(20) NOT NULL,
+    razao_social character varying(50) NOT NULL,
+    telefone character varying(15) NOT NULL
+);
+
+
+ALTER TABLE public.fornecedor OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1259 OID 172194)
+-- Name: itenspedido; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.itenspedido (
+    iditenspedido integer NOT NULL,
+    nropedido integer,
+    idproduto integer,
+    quantidade integer,
+    valor_unitario real,
+    valor real
+);
+
+
+ALTER TABLE public.itenspedido OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 172192)
+-- Name: itenspedido_iditenspedido_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.itenspedido_iditenspedido_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.itenspedido_iditenspedido_seq OWNER TO postgres;
+
+--
+-- TOC entry 2877 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: itenspedido_iditenspedido_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.itenspedido_iditenspedido_seq OWNED BY public.itenspedido.iditenspedido;
+
+
+--
+-- TOC entry 207 (class 1259 OID 98487)
+-- Name: pedido; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pedido (
+    nropedido integer NOT NULL,
+    total real,
+    data date NOT NULL,
+    idcliente integer
+);
+
+
+ALTER TABLE public.pedido OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1259 OID 98485)
+-- Name: pedido_nropedido_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.pedido_nropedido_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pedido_nropedido_seq OWNER TO postgres;
+
+--
+-- TOC entry 2878 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: pedido_nropedido_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.pedido_nropedido_seq OWNED BY public.pedido.nropedido;
+
+
+--
+-- TOC entry 205 (class 1259 OID 98474)
+-- Name: produto; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.produto (
+    idproduto integer NOT NULL,
+    tipo character varying(50) NOT NULL,
+    preco real NOT NULL,
+    cnpj_fornecedor character varying(20) NOT NULL,
+    estoque integer NOT NULL,
+    codigo_barra bigint NOT NULL
+);
+
+
+ALTER TABLE public.produto OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 98472)
+-- Name: produto_idproduto_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.produto_idproduto_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.produto_idproduto_seq OWNER TO postgres;
+
+--
+-- TOC entry 2879 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: produto_idproduto_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.produto_idproduto_seq OWNED BY public.produto.idproduto;
+
+
+--
+-- TOC entry 2714 (class 2604 OID 172197)
+-- Name: itenspedido iditenspedido; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.itenspedido ALTER COLUMN iditenspedido SET DEFAULT nextval('public.itenspedido_iditenspedido_seq'::regclass);
+
+
+--
+-- TOC entry 2713 (class 2604 OID 98490)
+-- Name: pedido nropedido; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pedido ALTER COLUMN nropedido SET DEFAULT nextval('public.pedido_nropedido_seq'::regclass);
+
+
+--
+-- TOC entry 2712 (class 2604 OID 98477)
+-- Name: produto idproduto; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.produto ALTER COLUMN idproduto SET DEFAULT nextval('public.produto_idproduto_seq'::regclass);
+
+
+--
+-- TOC entry 2863 (class 0 OID 98462)
+-- Dependencies: 202
+-- Data for Name: cliente; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.cliente (idcliente, telefone, nome, rua, numero, bairro, cidade) FROM stdin;
+1	+5517997123456	Ana	Rua Amazonas	3222	Centro	Votuporanga
+2	+5517997234567	Bia	Rua Acre	1552	Centro	Votuporanga
+3	+5517998795485	Carlos	Rua Alagoas	3333	Centro	Votuporanga
+4	+5517992578485	Daiane	Rua Piaui	4444	Centro	Votuporanga
+5	+5517991515125	Edna	Rua Tocantins	5555	Vila Paes	Votuporanga
+6	+5517997878787	Fabio	Rua Pernambuco	6666	Vila Marao	Votuporanga
+7	+5517991212121	Giovana	Rua Ivai	7777	Do Cafe	Votuporanga
+8	+5517998585858	Heitor	Rua dos Catequistas	8888	Vila Nova	Votuporanga
+10	+5517991522545	Joao	Rua Mato Grosso	1010	Centro	Votuporanga
+20	+5511111111112	Teste2	Teste2	112	Teste2	Teste2
+9	+5517991652651	Igor	Rua Sao Paulo	9998	Centro	Votuporanga
+12	+55           	asd	aruassa	10		
+\.
+
+
+--
+-- TOC entry 2871 (class 0 OID 188576)
+-- Dependencies: 210
+-- Data for Name: emailcliente; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.emailcliente (idcliente, email) FROM stdin;
+1	Ana554@gmail.com
+2	Bia1234@gmail.com
+3	Carlao@gmail.com
+4	Daiane557@gmail.com
+5	Edna2002@gmail.com
+6	FabioLima@gmail.com
+7	GiovanaCamargo@gmail.com
+8	Heitor007@gmail.com
+9	Igor1997@gmail.com
+10	Joaozinho@gmail.com
+20	teste@hotmail.com
+\.
+
+
+--
+-- TOC entry 2864 (class 0 OID 98467)
+-- Dependencies: 203
+-- Data for Name: fornecedor; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.fornecedor (cnpj, razao_social, telefone) FROM stdin;
+31.857.428/0001-06	Gygabon Sorvetes Industria LTDA	+551434253525
+85.748.542/0001-02	Piui Embalagens LTDA	+551435564445
+33.443.233/0001-04	Armazem Leve LTDA	+551439998888
+12.345.678/0001-03	Coca Cola S/A	+551132225551
+\.
+
+
+--
+-- TOC entry 2870 (class 0 OID 172194)
+-- Dependencies: 209
+-- Data for Name: itenspedido; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.itenspedido (iditenspedido, nropedido, idproduto, quantidade, valor_unitario, valor) FROM stdin;
+1	26	5	20	2	40
+2	26	5	1	2	2
+3	26	2	5	3.5	17.5
+4	27	1	1	2	2
+5	28	1	10	2	20
+6	29	1	20	2	40
+7	30	1	200	2	400
+8	31	1	20	2	40
+10	33	2	10	3.5	35
+11	34	1	40	2	80
+13	36	10	10	3.5	35
+\.
+
+
+--
+-- TOC entry 2868 (class 0 OID 98487)
+-- Dependencies: 207
+-- Data for Name: pedido; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pedido (nropedido, total, data, idcliente) FROM stdin;
+1	0	2020-05-20	10
+2	0	2020-05-20	2
+3	0	2020-05-21	8
+4	0	2020-05-21	2
+5	0	2020-05-21	7
+6	0	2020-05-22	6
+7	0	2020-05-22	5
+8	0	2020-05-22	2
+9	0	2020-05-23	8
+10	0	2020-05-23	2
+12	26	2020-09-16	10
+13	170	2020-09-16	5
+14	25	2020-10-28	20
+15	140	2020-11-24	3
+16	55	2020-11-24	1
+17	100	2020-11-24	1
+20	40	2020-11-24	10
+21	70	2020-11-25	10
+23	35	2020-11-25	10
+25	93	2020-12-16	2
+26	59.5	2020-12-16	5
+27	2	2021-01-05	1
+28	20	2021-01-06	3
+29	40	2021-01-06	2
+30	400	2021-01-06	5
+31	40	2021-01-06	4
+33	35	2021-01-06	1
+34	80	2021-01-06	5
+36	35	2021-01-20	5
+\.
+
+
+--
+-- TOC entry 2866 (class 0 OID 98474)
+-- Dependencies: 205
+-- Data for Name: produto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.produto (idproduto, tipo, preco, cnpj_fornecedor, estoque, codigo_barra) FROM stdin;
+6	Agua Leve C/ gas	2.5	33.443.233/0001-04	100	7894563210006
+7	Coca Cola 2L	9	12.345.678/0001-03	100	7894563210007
+8	Coca Cola 1L	5	12.345.678/0001-03	100	7894563210008
+9	Pote 120ml	4.5	31.857.428/0001-06	100	7894563210009
+5	Agua Leve S/ gas	2	33.443.233/0001-04	94	7894563210005
+3	Pote 2L	25	33.443.233/0001-04	49	7894563210003
+4	Pote 2L Premium	28	31.857.428/0001-06	98	7894563210004
+2	Skimo	3.5	31.857.428/0001-06	10	7894563210002
+21	Coca 3L	12	12.345.678/0001-03	10	7849849875784
+1	Picole	2	31.857.428/0001-06	40	7894563210001
+10	Sprite	3.5	12.345.678/0001-03	90	7894563210010
+\.
+
+
+--
+-- TOC entry 2880 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: itenspedido_iditenspedido_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.itenspedido_iditenspedido_seq', 13, true);
+
+
+--
+-- TOC entry 2881 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: pedido_nropedido_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.pedido_nropedido_seq', 36, true);
+
+
+--
+-- TOC entry 2882 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: produto_idproduto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.produto_idproduto_seq', 21, true);
+
+
+--
+-- TOC entry 2716 (class 2606 OID 98466)
+-- Name: cliente pk_cliente; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cliente
+    ADD CONSTRAINT pk_cliente PRIMARY KEY (idcliente);
+
+
+--
+-- TOC entry 2728 (class 2606 OID 188580)
+-- Name: emailcliente pk_emailcliente; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.emailcliente
+    ADD CONSTRAINT pk_emailcliente PRIMARY KEY (idcliente, email);
+
+
+--
+-- TOC entry 2718 (class 2606 OID 98471)
+-- Name: fornecedor pk_fornecedor; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fornecedor
+    ADD CONSTRAINT pk_fornecedor PRIMARY KEY (cnpj);
+
+
+--
+-- TOC entry 2726 (class 2606 OID 172199)
+-- Name: itenspedido pk_itenspedido; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.itenspedido
+    ADD CONSTRAINT pk_itenspedido PRIMARY KEY (iditenspedido);
+
+
+--
+-- TOC entry 2724 (class 2606 OID 98492)
+-- Name: pedido pk_pedido; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pedido
+    ADD CONSTRAINT pk_pedido PRIMARY KEY (nropedido);
+
+
+--
+-- TOC entry 2720 (class 2606 OID 98479)
+-- Name: produto pk_produto; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT pk_produto PRIMARY KEY (idproduto);
+
+
+--
+-- TOC entry 2722 (class 2606 OID 131233)
+-- Name: produto un_codigo_barra; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT un_codigo_barra UNIQUE (codigo_barra);
+
+
+--
+-- TOC entry 2730 (class 2606 OID 188582)
+-- Name: emailcliente un_email; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.emailcliente
+    ADD CONSTRAINT un_email UNIQUE (email);
+
+
+--
+-- TOC entry 2736 (class 2620 OID 196768)
+-- Name: itenspedido tr_baixa_estoque; Type: TRIGGER; Schema: public; Owner: postgres
+--
+
+CREATE TRIGGER tr_baixa_estoque BEFORE INSERT ON public.itenspedido FOR EACH ROW EXECUTE FUNCTION public.f_baixaestoque();
+
+
+--
+-- TOC entry 2735 (class 2606 OID 188583)
+-- Name: emailcliente fk_emailcliente_cliente; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.emailcliente
+    ADD CONSTRAINT fk_emailcliente_cliente FOREIGN KEY (idcliente) REFERENCES public.cliente(idcliente) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2734 (class 2606 OID 172205)
+-- Name: itenspedido fk_itenspedido_pedido; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.itenspedido
+    ADD CONSTRAINT fk_itenspedido_pedido FOREIGN KEY (nropedido) REFERENCES public.pedido(nropedido);
+
+
+--
+-- TOC entry 2733 (class 2606 OID 172200)
+-- Name: itenspedido fk_itenspedido_produto; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.itenspedido
+    ADD CONSTRAINT fk_itenspedido_produto FOREIGN KEY (idproduto) REFERENCES public.produto(idproduto);
+
+
+--
+-- TOC entry 2732 (class 2606 OID 98493)
+-- Name: pedido fk_pedido_cliente; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pedido
+    ADD CONSTRAINT fk_pedido_cliente FOREIGN KEY (idcliente) REFERENCES public.cliente(idcliente);
+
+
+--
+-- TOC entry 2731 (class 2606 OID 98480)
+-- Name: produto fk_produto_fornecedor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fk_produto_fornecedor FOREIGN KEY (cnpj_fornecedor) REFERENCES public.fornecedor(cnpj);
+
+
+-- Completed on 2021-01-20 23:05:22
+
+--
+-- PostgreSQL database dump complete
+--
+
