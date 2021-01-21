@@ -37,7 +37,7 @@ public class JIFProduto extends javax.swing.JInternalFrame {
             initComponents();
         
             for (Fornecedor f : listaFornecedor) {
-                jcbFornecedor.addItem(f.getCnpj());
+                jcbFornecedor.addItem(f.getRazao_social());
             }
             
         } catch (Exception ex) {
@@ -143,14 +143,14 @@ public class JIFProduto extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Tipo", "Preço", "Fornecedor", "Estoque"
+                "Código Barras", "Tipo", "Preço", "Fornecedor", "Estoque", "Código Interno"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -186,55 +186,50 @@ public class JIFProduto extends javax.swing.JInternalFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(80, 80, 80)
-                        .addComponent(jbNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(47, 47, 47)
-                        .addComponent(jbSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42)
-                        .addComponent(jbCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(145, 145, 145)
-                        .addComponent(jbEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(55, 55, 55)
-                        .addComponent(jbExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jtPesquisa))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 561, Short.MAX_VALUE)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtTipo))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtCodigoBarra, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jcbFornecedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(24, 24, 24)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jsEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addComponent(jtCodigoBarra, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jcbFornecedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtTipo)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jtPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jsEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(35, 35, 35))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jbNovo, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(jbSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(jbCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(jbEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55)
+                        .addComponent(jbExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(110, 110, 110))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -374,12 +369,25 @@ public class JIFProduto extends javax.swing.JInternalFrame {
                 jtCodigoBarra.setText(jtbDados.getValueAt(jtbDados.getSelectedRow(), 0).toString());
                 jtTipo.setText(jtbDados.getValueAt(jtbDados.getSelectedRow(), 1).toString());
                 jtPreco.setText(jtbDados.getValueAt(jtbDados.getSelectedRow(), 2).toString());
-                jcbFornecedor.addItem(jtbDados.getValueAt(jtbDados.getSelectedRow(), 3).toString());
+                
+                //o for abaixo percorre os itens do combobox e compara a razão_social que vem da JTable com a razao_social 
+                //que esta no combobox, ao encontrar atribui o valor do index para a variavel index, e seta o index ao combobox
+                //assim nao necessita usar o addItem, e evitar criar varios itens dentro do combobox
+                int index = 0;
+                for (int i = 0; i < jcbFornecedor.getItemCount(); i++) {
+                    jcbFornecedor.setSelectedIndex(i);
+                    if (jtbDados.getValueAt(jtbDados.getSelectedRow(), 3).toString().equals((String)jcbFornecedor.getSelectedItem())) {
+                        index = i;
+                    }
+                }
+                jcbFornecedor.setSelectedIndex(index);
+
+                
                 jsEstoque.setValue(Integer.parseInt(jtbDados.getValueAt(jtbDados.getSelectedRow(), 4).toString()));
                 jbEditar.setEnabled(true);
                 jbExcluir.setEnabled(true);
                 jbCancelar.setEnabled(true);
-            
+
             } else {
                 jbEditar.setEnabled(false);
                 jbExcluir.setEnabled(false);
@@ -401,8 +409,8 @@ public class JIFProduto extends javax.swing.JInternalFrame {
                 mp.setNumRows(0);
                 lista = DAO.pesquisar(jtPesquisa.getText());
                 for(Produto p: lista){
-                    ////Long Codigo_Barra, String tipo, Float Preco, String Cnpj_fornecedor, int Estoque
-                    mp.addRow(new String[]{""+p.getCodigo_barra(),p.getTipo(),""+p.getPreco(),p.getCnpj_fornecedor(), ""+p.getEstoque()});
+                    ////Long Codigo_Barra, String tipo, Float Preco, String Cnpj_fornecedor, int Estoque, int idProduto
+                    mp.addRow(new String[]{""+p.getCodigo_barra(),p.getTipo(),""+p.getPreco(),DAOF.retornarRazaoSocial(p.getCnpj_fornecedor()), ""+p.getEstoque(), ""+p.getIdProduto()});
                 }
             }
   
@@ -431,7 +439,7 @@ public class JIFProduto extends javax.swing.JInternalFrame {
         obj.setCodigo_barra(Long.parseLong(jtCodigoBarra.getText()));
         obj.setTipo(jtTipo.getText());
         obj.setPreco(Float.parseFloat(jtPreco.getText()));
-        obj.setCnpj_fornecedor((String)jcbFornecedor.getSelectedItem());
+        obj.setCnpj_fornecedor(DAOF.retornarCnpj((String)jcbFornecedor.getSelectedItem()));
         obj.setEstoque((int)jsEstoque.getValue());
         return true;
     }

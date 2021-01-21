@@ -54,7 +54,29 @@ public class FornecedorData extends Conexao{
         return sb.toString();
     }
     
-        public String colocarParenteses(String telefone) throws Exception{
+    public String retornarRazaoSocial(String cnpj) throws Exception{
+        String sql = "SELECT razao_social FROM Fornecedor WHERE cnpj = '"+cnpj+"'";
+        PreparedStatement ps = getConexao().prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        if (rs.next()) {
+            return rs.getString("razao_social");
+        }
+        throw new Exception("Fornecedor não encontrado!");
+    }
+    
+    public String retornarCnpj(String razao_social) throws Exception{
+        String sql = "SELECT cnpj FROM Fornecedor WHERE razao_social = '"+razao_social+"'";
+        PreparedStatement ps = getConexao().prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        if (rs.next()) {
+            return rs.getString("cnpj");
+        }
+        throw new Exception("Fornecedor não encontrado!");
+    }
+    
+    public String colocarParenteses(String telefone) throws Exception{
         StringBuilder sb = new StringBuilder(telefone);
         
         //deletar o prefixo "+55" : +55 ## ##### ####
